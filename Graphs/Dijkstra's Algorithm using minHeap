@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+// } Driver Code Ends
+class Solution
+{
+	public:
+    vector <int> dijkstra(int V, vector<vector<int>> adj[], int S)
+    {  
+        //min heap: {distance b/w to vertices, current vertex}
+        priority_queue<pair<int, int>, vector<pair<int,int>>, greater<pair<int,int>>> pq;
+        // using distance as the sorting value it ensures that the pair at top of the heap always has minimum weight
+
+        vector<int> dis(V);    // final distance vector containing minimum cost from source to all vertices
+        
+        for(int i=0; i<V; i++){
+            dis[i] = 1e9;
+        }
+        
+        dis[S] = 0;
+        pq.push({0, S});  //distance from source will always be zero i.e. from S to S distance is 0
+        
+        while(!pq.empty()){
+            int dist = pq.top().first;
+            int node = pq.top().second;
+           
+            pq.pop();
+            
+            for(auto it: adj[node]){
+                int edgeWeight = it[1];
+                int vertexNode = it[0];
+                
+                if(dis[vertexNode] > edgeWeight + dist){
+                    dis[vertexNode] = edgeWeight+dist;
+                    
+                    pq.push({dis[vertexNode], vertexNode});
+                }
+            }
+            
+        }
+        return dis;
+    }
+};
+
+int main()
+{
+    int t;
+    cin >> t;
+    while (t--) {
+        int V, E;
+        cin >> V >> E;
+        vector<vector<int>> adj[V];
+        int i=0;
+        while (i++<E) {
+            int u, v, w;  //vertex1, vertex2, weight between v1 and v2
+            cin >> u >> v >> w;
+            vector<int> t1,t2;
+            t1.push_back(v);
+            t1.push_back(w);
+            adj[u].push_back(t1);  //adj[vertex2] = vertex1, weight 
+            t2.push_back(u);
+            t2.push_back(w);
+            adj[v].push_back(t2);  //adj[vertex1] = vertex2, weight 
+        }
+        int S;
+        cin>>S;
+        
+        Solution obj;
+    	vector<int> res = obj.dijkstra(V, adj, S);
+    	
+    	for(int i=0; i<V; i++)
+    	    cout<<res[i]<<" ";
+    	cout<<endl;
+    }
+    return 0;
+}
